@@ -1,0 +1,45 @@
+:root {
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+}
+
+.animated-card-wrapper {
+  perspective: 1000px;
+  transform: translate3d(0, 0, 0.1px);
+  position: relative;
+  touch-action: none;
+}
+
+.animated-card-shell {
+  position: relative;
+  z-index: 1;
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+  transform: translateZ(0) rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+}
+
+.animated-card-shell.entering {
+  transition: transform 150ms ease-out;
+}
+
+.animated-card-shell:hover,
+.animated-card-shell.active {
+  transition: none;
+  transform: translateZ(0) rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+}
+
+.animated-card-shell > * {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Prevent text flickering during 3D transforms */
+.animated-card-shell h3,
+.animated-card-shell p {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

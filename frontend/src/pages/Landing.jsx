@@ -1,6 +1,9 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import SplitText from "../components/SplitText";
+import Footer from "../components/Footer";
+import AnimatedCard from "../components/AnimatedCard";
+import { useRef, useEffect } from "react";
 
 const handleAnimationComplete = () => {
   console.log('Welcome text animation completed!');
@@ -9,6 +12,25 @@ const handleAnimationComplete = () => {
 function Landing() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const buttonsRef = useRef(null);
+
+  // Extract first name from full name
+  const getFirstName = (fullName) => {
+    if (!fullName) return "User";
+    return fullName.split(' ')[0];
+  };
+
+  // Add pop-up animation for cards
+  useEffect(() => {
+    if (buttonsRef.current && !loading) {
+      const buttons = buttonsRef.current.children;
+      
+      // Simple pop-up animation
+      Array.from(buttons).forEach((button, index) => {
+        button.style.animation = `popUp 0.4s ease-out ${index * 0.1}s both`;
+      });
+    }
+  }, [loading]);
 
   if (loading) {
     return (
@@ -22,20 +44,35 @@ function Landing() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <style jsx>{`
+        @keyframes popUp {
+          0% {
+            transform: scale(0);
+            opacity: 0;
+          }
+          60% {
+            transform: scale(1.1);
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
       {/* Hero Section */}
-      <div className="bg-white border-b">
+      <div className="bg-white border-b flex-grow">
         <div className="max-w-7xl mx-auto px-4 py-16">
           <div className="text-center flex flex-col items-center justify-center">
             <SplitText
-              text={`Welcome back, ${user?.name}!`}
+              text={`Welcome back, ${getFirstName(user?.name)}!`}
               className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
-              delay={50}
-              duration={0.8}
-              ease="power3.out"
+              delay={80}
+              duration={1.2}
+              ease="power4.out"
               splitType="chars"
-              from={{ opacity: 0, y: 50 }}
-              to={{ opacity: 1, y: 0 }}
+              from={{ opacity: 0, y: 80, rotationX: 90 }}
+              to={{ opacity: 1, y: 0, rotationX: 0 }}
               threshold={0.1}
               rootMargin="-100px"
               textAlign="center"
@@ -46,12 +83,12 @@ function Landing() {
             <SplitText
               text="Choose your role to get started with Settlr"
               className="text-xl text-gray-600 mb-8"
-              delay={30}
-              duration={0.6}
-              ease="power2.out"
+              delay={40}
+              duration={0.8}
+              ease="power3.out"
               splitType="words"
-              from={{ opacity: 0, y: 30 }}
-              to={{ opacity: 1, y: 0 }}
+              from={{ opacity: 0, y: 40, scale: 0.8 }}
+              to={{ opacity: 1, y: 0, scale: 1 }}
               threshold={0.2}
               rootMargin="-50px"
               textAlign="center"
@@ -59,32 +96,31 @@ function Landing() {
             />
             
             {/* Role Selection */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12 mt-16">
-              <button 
-                onClick={() => navigate("/tenant")}
-                className="group px-8 py-6 bg-white border-2 border-gray-300 rounded-xl hover:bg-black hover:border-[#26f50c] hover:text-white hover:scale-105 transition-all duration-200"
-              >
-                <div className="flex items-center justify-center mx-auto mb-4">
-                  <img src="/tenants.png" alt="Tenant" className="w-32 h-32" />
+            <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-8 justify-center mb-12 mt-16">
+              <AnimatedCard onClick={() => navigate("/tenant")}>
+                <div className="group px-10 py-8 bg-white border-2 border-gray-300 rounded-xl hover:bg-black hover:border-[#26f50c] hover:text-white hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
+                  <div className="flex items-center justify-center mx-auto mb-4">
+                    <img src="/tenants.png" alt="Tenant" className="w-36 h-36" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">I'm a Tenant</h3>
+                  <p className="text-gray-600 text-sm group-hover:text-white transition-colors duration-300">Looking for a place to stay</p>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">I'm a Tenant</h3>
-                <p className="text-gray-600 text-sm group-hover:text-white">Looking for a place to stay</p>
-              </button>
+              </AnimatedCard>
 
-              <button 
-                onClick={() => navigate("/owner")}
-                className="group px-8 py-6 bg-white border-2 border-gray-300 rounded-xl hover:bg-black hover:border-[#26f50c] hover:text-white hover:scale-105 transition-all duration-200"
-              >
-                <div className="flex items-center justify-center mx-auto mb-4">
-                  <img src="/owner.png" alt="Owner" className="w-48 h-32" />
+              <AnimatedCard onClick={() => navigate("/owner")}>
+                <div className="group px-10 py-8 bg-white border-2 border-gray-300 rounded-xl hover:bg-black hover:border-[#26f50c] hover:text-white hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
+                  <div className="flex items-center justify-center mx-auto mb-4">
+                    <img src="/owner.png" alt="Owner" className="w-52 h-36" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">I'm an Owner</h3>
+                  <p className="text-gray-600 text-sm group-hover:text-white transition-colors duration-300">Listing my property for rent</p>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">I'm an Owner</h3>
-                <p className="text-gray-600 text-sm group-hover:text-white">Listing my property for rent</p>
-              </button>
+              </AnimatedCard>
             </div>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
