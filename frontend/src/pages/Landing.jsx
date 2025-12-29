@@ -81,8 +81,8 @@ function Landing() {
             />
 
             <SplitText
-              text="Choose your role to get started with Settlr"
-              className="text-xl text-gray-600 mb-8"
+              text="Choose your role"
+              className="text-xl text-black font-bold mb-8"
               delay={40}
               duration={0.8}
               ease="power3.out"
@@ -100,7 +100,7 @@ function Landing() {
               <AnimatedCard onClick={() => navigate("/tenant")}>
                 <div className="group px-10 py-8 bg-white border-2 border-gray-300 rounded-xl hover:bg-black hover:border-[#26f50c] hover:text-white hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
                   <div className="flex items-center justify-center mx-auto mb-4">
-                    <img src="/tenants.png" alt="Tenant" className="w-36 h-36" />
+                    <img src="/tenants.png" alt="Tenant" className="w-48 h-36" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">I'm a Tenant</h3>
                   <p className="text-gray-600 text-sm group-hover:text-white transition-colors duration-300">Looking for a place to stay</p>
@@ -110,7 +110,7 @@ function Landing() {
               <AnimatedCard onClick={() => navigate("/owner")}>
                 <div className="group px-10 py-8 bg-white border-2 border-gray-300 rounded-xl hover:bg-black hover:border-[#26f50c] hover:text-white hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
                   <div className="flex items-center justify-center mx-auto mb-4">
-                    <img src="/owner.png" alt="Owner" className="w-52 h-36" />
+                    <img src="/owner.png" alt="Owner" className="w-48 h-36" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">I'm an Owner</h3>
                   <p className="text-gray-600 text-sm group-hover:text-white transition-colors duration-300">Listing my property for rent</p>

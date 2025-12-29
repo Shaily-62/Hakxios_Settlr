@@ -19,7 +19,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="w-full bg-white shadow-sm sticky top-0 z-50">
+    <nav className="w-full bg-black/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
 
         {/* Logo */}
@@ -28,7 +28,7 @@ function Navbar() {
             navigate("/");
             setIsOpen(false);
           }}
-          className="text-2xl font-bold cursor-pointer"
+          className="text-2xl font-bold cursor-pointer text-white"
         >
           Settlr
         </div>
@@ -47,20 +47,16 @@ function Navbar() {
           ) : (
             // Show Login and Sign Up buttons when user is logged out
             <>
-              <Link to="/" className="text-gray-600 hover:text-black">
-                Home
-              </Link>
-
               <Link
                 to="/login"
-                className="px-5 py-2 border border-black rounded-lg hover:bg-black hover:text-white transition"
+                className="px-5 py-2 text-white hover:text-[#26f50c] transition"
               >
                 Login
               </Link>
 
               <Link
                 to="/register"
-                className="px-5 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition"
+                className="px-5 py-2 text-white hover:text-[#26f50c] transition"
               >
                 Sign Up
               </Link>
@@ -70,7 +66,7 @@ function Navbar() {
 
         {/* Mobile Button */}
         <button
-          className="md:hidden text-2xl"
+          className="md:hidden text-2xl text-white"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? "✕" : "☰"}
@@ -79,7 +75,7 @@ function Navbar() {
 
       {/* Mobile Dropdown */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t shadow-sm">
+        <div className="md:hidden bg-black/80 backdrop-blur-md border-t shadow-sm">
           <div className="flex flex-col px-4 py-4 space-y-4">
             {user ? (
               // Show Sign Out button when user is logged in
@@ -97,17 +93,9 @@ function Navbar() {
               // Show Login and Sign Up buttons when user is logged out
               <>
                 <Link
-                  to="/"
-                  onClick={() => setIsOpen(false)}
-                  className="text-gray-700"
-                >
-                  Home
-                </Link>
-
-                <Link
                   to="/login"
                   onClick={() => setIsOpen(false)}
-                  className="text-gray-700"
+                  className="text-white hover:text-[#26f50c]"
                 >
                   Login
                 </Link>
@@ -115,7 +103,7 @@ function Navbar() {
                 <Link
                   to="/register"
                   onClick={() => setIsOpen(false)}
-                  className="text-gray-700"
+                  className="text-white hover:text-[#26f50c]"
                 >
                   Sign Up
                 </Link>

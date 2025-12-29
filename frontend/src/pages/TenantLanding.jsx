@@ -92,7 +92,7 @@ function TenantLanding() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-white flex flex-col relative overflow-hidden animate-page-enter">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-r from-transparent via-[#26f50c]/10 to-transparent rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
@@ -115,26 +115,36 @@ function TenantLanding() {
         </div>
 
         {/* Vercel-style Chat Container */}
-        <div className="flex-grow flex items-start justify-center px-4 pt-16 pb-8">
+        <div className="flex-grow flex items-start justify-center px-4 pt-16 pb-8 animate-fade-in-up">
           <div className="w-full max-w-4xl mx-auto p-4 space-y-8">
-            <h1 className="text-4xl font-bold text-black dark:text-white text-center">
+            <h1 className="text-4xl font-bold text-black dark:text-white text-center animate-fade-in-up-delay-1">
               What can I help you find?
             </h1>
 
-            <div className="w-full">
-              <div className="relative bg-neutral-900 rounded-xl border border-neutral-800">
-                <div className="overflow-y-auto max-h-96 p-4 space-y-4">
+            <div className="w-full animate-fade-in-up-delay-2">
+              <div className="relative bg-gradient-to-br from-gray-900 to-black rounded-2xl border border-gray-800 shadow-2xl overflow-hidden">
+                {/* Chat Header */}
+                <div className="bg-gradient-to-r from-[#26f50c]/10 to-transparent px-6 py-4 border-b border-gray-800">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-[#26f50c] rounded-full animate-pulse"></div>
+                    <h2 className="text-white font-semibold">Settlr AI Assistant</h2>
+                    <span className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded-full">Online</span>
+                  </div>
+                </div>
+
+                {/* Messages Area */}
+                <div className="overflow-y-auto max-h-96 p-6 space-y-4 bg-gradient-to-b from-gray-900/50 to-black/50">
                   {messages.map((message) => (
-                    <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
                       <div className={`max-w-lg ${message.type === 'user' ? 'order-2' : 'order-1'}`}>
-                        <div className={`px-4 py-3 rounded-2xl ${
+                        <div className={`px-4 py-3 rounded-2xl shadow-lg ${
                           message.type === 'user' 
-                            ? 'bg-[#26f50c] text-black rounded-br-none' 
-                            : 'bg-gray-100 text-gray-900 rounded-bl-none border border-gray-200'
+                            ? 'bg-gradient-to-r from-[#26f50c] to-[#26f50c]/90 text-black rounded-br-none font-medium' 
+                            : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-900 rounded-bl-none border border-gray-300'
                         }`}>
                           <p className="text-sm leading-relaxed">{message.text}</p>
                         </div>
-                        <p className={`text-xs text-gray-400 mt-1 ${message.type === 'user' ? 'text-right' : 'text-left'}`}>
+                        <p className={`text-xs text-gray-500 mt-1 ${message.type === 'user' ? 'text-right' : 'text-left'}`}>
                           {message.time}
                         </p>
                       </div>
@@ -142,53 +152,68 @@ function TenantLanding() {
                   ))}
                   
                   {isTyping && (
-                    <div className="flex justify-start">
-                      <div className="bg-gray-100 text-gray-900 rounded-2xl rounded-bl-none border border-gray-200 px-4 py-3">
+                    <div className="flex justify-start animate-fade-in">
+                      <div className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-900 rounded-2xl rounded-bl-none border border-gray-300 px-4 py-3 shadow-lg">
                         <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-[#26f50c] rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-[#26f50c] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-[#26f50c] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="flex items-center justify-between p-3 border-t border-neutral-800">
-                  <div className="flex items-center gap-2">
+                {/* Input Area */}
+                <div className="p-4 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800">
+                  <div className="flex items-center gap-3">
                     <button
                       type="button"
-                      className="p-2 hover:bg-neutral-800 rounded-lg transition-colors flex items-center gap-1"
+                      className="p-3 hover:bg-gray-800 rounded-xl transition-all duration-200 hover:scale-105 group"
                     >
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49 0L2.56 11.05a6 6 0 018.49 0l9.19 9.19a6 6 0 018.49 0l9.19-9.19a6 6 0 00-8.49 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.5 7.5v9M12 12.75h7.5" />
+                      <svg className="w-5 h-5 text-gray-400 group-hover:text-[#26f50c] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                       </svg>
-                      <span className="text-xs text-zinc-400 hidden group-hover:inline transition-opacity">Attach</span>
                     </button>
-                  </div>
-                  <div className="flex items-center gap-2">
+                    
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Ask me anything about rentals..."
+                        className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#26f50c] focus:ring-2 focus:ring-[#26f50c]/20 transition-all duration-200"
+                      />
+                    </div>
+                    
                     <button
                       type="button"
-                      className="px-2 py-1 rounded-lg text-sm text-zinc-400 transition-colors border border-dashed border-zinc-700 hover:border-zinc-600 hover:bg-zinc-800 flex items-center justify-between gap-1"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                      Quick
-                    </button>
-                    <button
-                      type="button"
-                      className={`px-1.5 py-1.5 rounded-lg text-sm transition-colors border border-zinc-700 hover:border-zinc-600 hover:bg-zinc-800 flex items-center justify-between gap-1 ${
-                        inputValue.trim() ? "bg-white text-black" : "text-zinc-400"
+                      className={`px-4 py-3 rounded-xl font-medium transition-all duration-200 hover:scale-105 ${
+                        inputValue.trim() 
+                          ? "bg-gradient-to-r from-[#26f50c] to-[#26f50c]/90 text-black shadow-lg hover:shadow-xl" 
+                          : "bg-gray-800 text-gray-400 cursor-not-allowed"
                       }`}
                       onClick={() => handleSendMessage(inputValue)}
+                      disabled={!inputValue.trim()}
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                       </svg>
-                      <span className="sr-only">Send</span>
                     </button>
+                  </div>
+                  
+                  {/* Quick Suggestions */}
+                  <div className="flex gap-2 mt-3 flex-wrap">
+                    {quickSuggestions.slice(0, 3).map((suggestion, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSendMessage(suggestion)}
+                        className="px-3 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs rounded-full border border-gray-700 hover:border-[#26f50c]/50 transition-all duration-200 hover:scale-105"
+                      >
+                        {suggestion.length > 40 ? suggestion.substring(0, 40) + '...' : suggestion}
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>

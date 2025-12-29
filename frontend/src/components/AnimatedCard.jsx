@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import './AnimatedCard.css';
 
 const ANIMATION_CONFIG = {
@@ -20,6 +20,7 @@ const AnimatedCard = ({
 }) => {
   const wrapRef = useRef(null);
   const shellRef = useRef(null);
+  const [isClicking, setIsClicking] = useState(false);
 
   const enterTimerRef = useRef(null);
   const leaveRafRef = useRef(null);
@@ -36,8 +37,8 @@ const AnimatedCard = ({
     let targetX = 0;
     let targetY = 0;
 
-    const DEFAULT_TAU = 0.14;
-    const INITIAL_TAU = 0.6;
+    const DEFAULT_TAU = 0.08; // Reduced for faster response
+    const INITIAL_TAU = 0.3; // Reduced for faster initial movement
     let initialUntil = 0;
 
     const setVarsFromXY = (x, y) => {
@@ -156,7 +157,7 @@ const AnimatedCard = ({
       if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
       enterTimerRef.current = window.setTimeout(() => {
         shell.classList.remove('entering');
-      }, ANIMATION_CONFIG.ENTER_TRANSITION_MS);
+      }, 50); // Reduced to 50ms for faster start
 
       const { x, y } = getOffsets(event, shell);
       tiltEngine.setTarget(x, y);
@@ -172,7 +173,7 @@ const AnimatedCard = ({
 
     const checkSettle = () => {
       const { x, y, tx, ty } = tiltEngine.getCurrent();
-      const settled = Math.hypot(tx - x, ty - y) < 0.6;
+      const settled = Math.hypot(tx - x, ty - y) < 0.1; // Reduced threshold for quicker detection
       if (settled) {
         shell.classList.remove('active');
         leaveRafRef.current = null;
@@ -221,13 +222,30 @@ const AnimatedCard = ({
     handlePointerLeave
   ]);
 
-  const handleClick = useCallback(() => {
-    onClick?.();
+  const handleClick = useCallback((event) => {
+    const shell = shellRef.current;
+    if (!shell) return;
+
+    setIsClicking(true);
+    
+    // Add scale animation
+    shell.style.transform = 'scale(0.95)';
+    shell.style.transition = 'transform 0.1s ease-out';
+    
+    setTimeout(() => {
+      shell.style.transform = 'scale(1)';
+      shell.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    }, 100);
+
+    setTimeout(() => {
+      setIsClicking(false);
+      onClick?.();
+    }, 400);
   }, [onClick]);
 
   return (
     <div ref={wrapRef} className={`animated-card-wrapper ${className}`.trim()}>
-      <div ref={shellRef} className="animated-card-shell" onClick={handleClick}>
+      <div ref={shellRef} className={`animated-card-shell ${isClicking ? 'clicking' : ''}`} onClick={handleClick}>
         {children}
       </div>
     </div>

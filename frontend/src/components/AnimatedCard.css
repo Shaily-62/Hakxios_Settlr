@@ -10,14 +10,17 @@
   transform: translate3d(0, 0, 0.1px);
   position: relative;
   touch-action: none;
+  border-radius: 0.75rem;
 }
 
 .animated-card-shell {
   position: relative;
   z-index: 1;
   transform-style: preserve-3d;
-  transition: transform 0.1s ease-out;
+  transition: transform 0.05s ease-out;
   transform: translateZ(0) rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+  overflow: hidden;
+  border-radius: 0.75rem;
 }
 
 .animated-card-shell.entering {
@@ -28,11 +31,19 @@
 .animated-card-shell.active {
   transition: none;
   transform: translateZ(0) rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+  border-radius: 0.75rem;
+}
+
+.animated-card-shell.clicking {
+  transform: scale(0.95);
+  transition: transform 0.1s ease-out;
+  border-radius: 0.75rem;
 }
 
 .animated-card-shell > * {
   transform-style: preserve-3d;
   backface-visibility: hidden;
+  border-radius: 0.75rem;
 }
 
 /* Prevent text flickering during 3D transforms */
