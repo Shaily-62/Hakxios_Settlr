@@ -5,6 +5,7 @@ import { useRef, useEffect, useState } from "react";
 function Home() {
   const navigate = useNavigate();
   const carouselRef = useRef(null);
+  const cardRefs = useRef([]);
 
   const properties = [
     {
@@ -46,6 +47,7 @@ function Home() {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCards, setVisibleCards] = useState([false, false, false, false]);
 
   const scrollCarousel = (direction) => {
     const newIndex = direction === 'next' 
@@ -75,6 +77,79 @@ function Home() {
     return () => clearInterval(interval);
   }, [currentIndex]);
 
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = cardRefs.current.indexOf(entry.target);
+            if (index !== -1) {
+              setVisibleCards((prev) => {
+                const newVisible = [...prev];
+                newVisible[index] = true;
+                return newVisible;
+              });
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.2,
+        rootMargin: "0px"
+      }
+    );
+
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
+
+    return () => {
+      cardRefs.current.forEach((card) => {
+        if (card) observer.unobserve(card);
+      });
+    };
+  }, []);
+
+  const features = [
+    {
+      icon: (
+        <svg className="w-5 h-5 text-[#26f50c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      title: "Direct Connection",
+      description: "No third party broker involvement, find your stays and tenant on this platform!"
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5 text-[#26f50c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+      ),
+      title: "AI-Powered Search",
+      description: "Filtering is too time taking, ask our AI to help you find your stays 😉"
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5 text-[#26f50c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      title: "How much do we charge?",
+      description: "Money? nah that's not our style, customer satisfaction is our profit!"
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5 text-[#26f50c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      ),
+      title: "Is this safe?",
+      description: "No fake listings, no surprises - only genuine stays verified by us!"
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="flex-grow flex items-center justify-center px-4">
@@ -84,7 +159,7 @@ function Home() {
 
         <div className="text-center md:text-left">
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            Rent smart, Live better with 
+            Rent smart, Live better
           </h1>
 
           <p className="mt-5 text-gray-600 text-lg">
@@ -164,58 +239,33 @@ function Home() {
         </div>
 
         {/* Feature Highlights - Parallelogram Cards */}
-        <div className="flex justify-center">
-          <div className="space-y-6 max-w-2xl w-full">
-            {/* Card 1 */}
-            <div className="transform -skew-x-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="transform skew-x-6 p-5">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-[#26f50c]/20 rounded-full flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#26f50c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+        <div className="flex justify-center mb-20">
+          <div className="space-y-12 max-w-2xl w-full">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                ref={(el) => (cardRefs.current[index] = el)}
+                className={`transform -skew-x-6 bg-white rounded-2xl shadow-[4px_4px_0_0_#26f50c,-4px_4px_0_0_#26f50c,0_8px_20px_rgba(0,0,0,0.15)] hover:shadow-[6px_6px_0_0_#26f50c,-6px_6px_0_0_#26f50c,0_12px_25px_rgba(0,0,0,0.2)] transition-all duration-700 hover:scale-105 ${
+                  visibleCards[index]
+                    ? 'opacity-100 translate-x-0'
+                    : index % 2 === 0
+                    ? 'opacity-0 -translate-x-32'
+                    : 'opacity-0 translate-x-32'
+                }`}
+              >
+                <div className="transform skew-x-6 p-5">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-[#26f50c]/20 rounded-full flex items-center justify-center">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900">{feature.title}</h3>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Direct Connection</h3>
+                  <p className="text-black text-base">
+                    {feature.description}
+                  </p>
                 </div>
-                <p className="text-black text-base">
-                  No third party broker involvement, find your stays and tenant on this platform!
-                </p>
               </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className="transform -skew-x-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="transform skew-x-6 p-5">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-[#26f50c]/20 rounded-full flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#26f50c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900">AI-Powered Search</h3>
-                </div>
-                <p className="text-black text-base">
-                  Filtering is too time taking, ask our AI to help you find your stays 😉
-                </p>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className="transform -skew-x-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="transform skew-x-6 p-5">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-[#26f50c]/20 rounded-full flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#26f50c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900">How much do we charge?</h3>
-                </div>
-                <p className="text-black text-base">
-                  Money? nah that's not our style, customer satisfaction is our profit!
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
