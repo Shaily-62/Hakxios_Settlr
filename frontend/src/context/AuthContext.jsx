@@ -9,7 +9,9 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Force clear any existing auth state on initialization
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log('Auth state changed:', currentUser);
       if (currentUser) {
         setUser({
           name: currentUser.displayName,
