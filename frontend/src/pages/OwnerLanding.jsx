@@ -167,17 +167,17 @@ function OwnerLanding() {
   }, [addressQuery, canUseLocationIQ, LOCATIONIQ_KEY, showVerificationForm, currentStage]);
 
   useEffect(() => {
-  console.log('🔄 useEffect triggered. User:', user ? user.uid : 'No user');
-  console.log('📋 Loading state:', loading);
-  
-  if (!loading && user) {
-    console.log('✨ Calling fetchMyProperties...');
-    fetchMyProperties();
-  } else if (!loading && !user) {
-    console.log('⚠️ No user found, stopping loading');
-    setLoadingProperties(false);
-  }
-}, [user, loading]);
+    console.log('🔄 useEffect triggered. User:', user ? user.uid : 'No user');
+    console.log('📋 Loading state:', loading);
+
+    if (!loading && user) {
+      console.log('✨ Calling fetchMyProperties...');
+      fetchMyProperties();
+    } else if (!loading && !user) {
+      console.log('⚠️ No user found, stopping loading');
+      setLoadingProperties(false);
+    }
+  }, [user, loading]);
 
   const pickCity = (place) => {
     const name =
@@ -209,75 +209,75 @@ function OwnerLanding() {
   };
 
   const fetchMyProperties = async () => {
-  if (!user) {
-    console.log('❌ No user logged in, skipping fetch');
-    setLoadingProperties(false);
-    return;
-  }
-  
-  try {
-    console.log('🔍 Fetching properties for user:', user.uid);
-    console.log('📧 User email:', user.email);
-    setLoadingProperties(true);
-    
-    const token = await auth.currentUser.getIdToken();
-    console.log('✅ Token obtained successfully');
-    
-    const response = await fetch('http://localhost:5000/api/properties/my-properties', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
-    console.log('📊 Response status:', response.status);
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log('✅ Properties received:', data.length, 'properties');
-      setMyProperties(data);
-    } else {
-      const errorMessage = await response.text();
-      console.error('❌ Error response:', errorMessage);
-      alert(`Failed to load properties! Status: ${response.status}`);
+    if (!user) {
+      console.log('❌ No user logged in, skipping fetch');
+      setLoadingProperties(false);
+      return;
     }
-  } catch (error) {
-    console.error('❌ CRITICAL ERROR:', error);
-    alert(`Error fetching properties: ${error.message}`);
-  } finally {
-    setLoadingProperties(false);
-  }
-};
 
-// ✅ ADD THIS FUNCTION
-const handleDeleteProperty = async (propertyId) => {
-  if (!window.confirm('Are you sure you want to delete this property?')) {
-    return;
-  }
+    try {
+      console.log('🔍 Fetching properties for user:', user.uid);
+      console.log('📧 User email:', user.email);
+      setLoadingProperties(true);
 
-  try {
-    setDeletingId(propertyId);
-    const token = await auth.currentUser.getIdToken();
+      const token = await auth.currentUser.getIdToken();
+      console.log('✅ Token obtained successfully');
 
-    const response = await fetch(`http://localhost:5000/api/properties/${propertyId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
+      const response = await fetch('http://localhost:5000/api/properties/my-properties', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log('📊 Response status:', response.status);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Properties received:', data.length, 'properties');
+        setMyProperties(data);
+      } else {
+        const errorMessage = await response.text();
+        console.error('❌ Error response:', errorMessage);
+        alert(`Failed to load properties! Status: ${response.status}`);
       }
-    });
-
-    if (response.ok) {
-      alert('Property deleted successfully!');
-      setMyProperties(prev => prev.filter(p => p._id !== propertyId));
-    } else {
-      throw new Error('Failed to delete property');
+    } catch (error) {
+      console.error('❌ CRITICAL ERROR:', error);
+      alert(`Error fetching properties: ${error.message}`);
+    } finally {
+      setLoadingProperties(false);
     }
-  } catch (error) {
-    console.error('Error deleting property:', error);
-    alert(`Failed to delete property: ${error.message}`);
-  } finally {
-    setDeletingId(null);
-  }
-};
+  };
+
+  // ✅ ADD THIS FUNCTION
+  const handleDeleteProperty = async (propertyId) => {
+    if (!window.confirm('Are you sure you want to delete this property?')) {
+      return;
+    }
+
+    try {
+      setDeletingId(propertyId);
+      const token = await auth.currentUser.getIdToken();
+
+      const response = await fetch(`http://localhost:5000/api/properties/${propertyId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        alert('Property deleted successfully!');
+        setMyProperties(prev => prev.filter(p => p._id !== propertyId));
+      } else {
+        throw new Error('Failed to delete property');
+      }
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      alert(`Failed to delete property: ${error.message}`);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -317,7 +317,7 @@ const handleDeleteProperty = async (propertyId) => {
               Welcome, {user?.name || "Property Owner"}!
             </h1>
             <p className="text-xl text-gray-600 mb-8">List your property and find the perfect tenants</p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <button
                 onClick={() => setShowVerificationForm((s) => !s)}
@@ -557,9 +557,9 @@ const handleDeleteProperty = async (propertyId) => {
                   <option value="Family">Family</option>
                   <option value="Anyone">Anyone</option>
 
-                  <option value="working-professional">Working Professional</option>
+                  {/* <option value="working-professional">Working Professional</option>
                   <option value="family">Family</option>
-                  <option value="anyone">Anyone</option>
+                  <option value="anyone">Anyone</option> */}
                 </select>
               </div>
 
@@ -575,7 +575,7 @@ const handleDeleteProperty = async (propertyId) => {
                   <option value="Female">Female</option>
                   <option value="Any">Any</option>
 
-                  
+
                 </select>
               </div>
 
@@ -782,16 +782,14 @@ const handleDeleteProperty = async (propertyId) => {
                   <span className="text-gray-700">{label}</span>
                   <button
                     type="button"
-                    className={`${
-                      rules[id] ? "bg-green-500" : "bg-gray-200"
-                    } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2`}
+                    className={`${rules[id] ? "bg-green-500" : "bg-gray-200"
+                      } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2`}
                     onClick={() => setRules({ ...rules, [id]: !rules[id] })}
                   >
                     <span className="sr-only">{label}</span>
                     <span
-                      className={`${
-                        rules[id] ? "translate-x-6" : "translate-x-1"
-                      } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                      className={`${rules[id] ? "translate-x-6" : "translate-x-1"
+                        } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
                     />
                   </button>
                 </div>
@@ -838,9 +836,8 @@ const handleDeleteProperty = async (propertyId) => {
 
             <div className="space-y-6">
               <div
-                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                  isDragging ? "border-green-500 bg-green-50" : "border-gray-300"
-                }`}
+                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${isDragging ? "border-green-500 bg-green-50" : "border-gray-300"
+                  }`}
                 onDragOver={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -880,9 +877,8 @@ const handleDeleteProperty = async (propertyId) => {
                 />
                 <div className="flex flex-col items-center justify-center py-8 px-4 cursor-pointer">
                   <svg
-                    className={`w-12 h-12 ${
-                      isDragging ? "text-green-500" : "text-gray-400"
-                    } mb-2 transition-colors`}
+                    className={`w-12 h-12 ${isDragging ? "text-green-500" : "text-gray-400"
+                      } mb-2 transition-colors`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1047,7 +1043,7 @@ const handleDeleteProperty = async (propertyId) => {
         </div>
       )}
 
-   {/* ✅ ADD THIS ENTIRE SECTION - MY LISTED PROPERTIES */}
+      {/* ✅ ADD THIS ENTIRE SECTION - MY LISTED PROPERTIES */}
       {!showVerificationForm && (
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="mb-8">
@@ -1108,8 +1104,8 @@ const handleDeleteProperty = async (propertyId) => {
 
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <span className="px-2 py-1 bg-gray-100 rounded text-xs">
-  {property.bhkType?.toUpperCase() || 'N/A'}  {/* ✅ Safe with optional chaining */}
-</span>
+                        {property.bhkType?.toUpperCase() || 'N/A'}  {/* ✅ Safe with optional chaining */}
+                      </span>
 
                       <span className="px-2 py-1 bg-gray-100 rounded text-xs capitalize">{property.furnishing}</span>
                     </div>

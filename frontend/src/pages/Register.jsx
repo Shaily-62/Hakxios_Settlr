@@ -14,24 +14,37 @@ function Register() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleRegister = async () => {
-    setIsLoading(true);
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
 
-      setUser({
-        name: result.user.displayName,
-        email: result.user.email,
-        uid: result.user.uid,
+      // ✅ 1. Get Firebase ID Token
+      const token = await result.user.getIdToken();
+
+      // ✅ 2. Send token to backend
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+
+      // ✅ 3. Store backend user
+      setUser(data.user);
 
       navigate("/landing");
     } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
+      console.error("Register failed:", error.message);
     }
   };
+
 
   const handleEmailRegister = async (e) => {
     e.preventDefault();
@@ -55,7 +68,7 @@ function Register() {
           <span className="text-sm font-medium">Back</span>
         </button>
       </div>
-      
+
       <div className="flex-grow flex items-center justify-center px-4 pb-8">
         <div className="w-full max-w-md">
           {/* Logo/Brand */}
@@ -66,7 +79,7 @@ function Register() {
 
           {/* Register Card */}
           <div className="bg-black border-2 border-[#4ade80] rounded-2xl shadow-2xl p-6">
-            
+
             {/* Title */}
             <h2 className="text-2xl font-bold text-white text-center mb-6">
               Create Account
