@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
+import Footer from "../components/Footer";
 
 function OwnerLanding() {
   const navigate = useNavigate();
@@ -191,7 +192,7 @@ function OwnerLanding() {
   );
 
   return (
-    <div className="min-h-screen bg-white relative">
+    <div className="min-h-screen bg-white relative flex flex-col">
       {/* Back Button */}
       <div className="absolute top-4 left-4 z-20">
         <motion.button
@@ -199,7 +200,7 @@ function OwnerLanding() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
           onClick={() => navigate("/landing")}
-          className="flex items-center gap-2 bg-white text-gray-700 px-4 py-2 rounded-lg shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200 hover:scale-105"
+          className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md hover:bg-gray-800 transition-all duration-200 hover:scale-105"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -208,45 +209,43 @@ function OwnerLanding() {
         </motion.button>
       </div>
       
-      {/* Hero Section */}
-      <div className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-16">
+      {/* Main Content Area */}
+      <div className="flex-grow pt-24">
+        {/* Hero Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
+            Welcome, {user?.name || 'Property Owner'}!
+          </h1>
+          <p className="text-xl font-bold text-black mb-8">
+            Fill out the form and list your property in no time. Safe, secured and genuine!
+          </p>
+          
+          {/* Quick Actions */}
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
+            transition={{ delay: 0.2 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
-              Welcome, {user?.name || 'Property Owner'}!
-            </h1>
-            <p className="text-xl font-bold text-black mb-8">
-              Fill out the form and list your property in no time. Safe, secured and genuine!
-            </p>
-            
-            {/* Quick Actions */}
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowVerificationForm(!showVerificationForm)}
+              className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-md"
             >
-              <motion.button 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowVerificationForm(!showVerificationForm)}
-                className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-md hover:shadow-lg"
-              >
-                {showVerificationForm ? 'Hide Form' : 'List Your Property'}
-              </motion.button>
-            </motion.div>
+              {showVerificationForm ? 'Hide Form' : 'List Your Property'}
+            </motion.button>
           </motion.div>
-        </div>
-      </div>
-
-      {/* Form Dropdown Section */}
-      <AnimatePresence mode="wait">
-        {showVerificationForm && (
+        </motion.div>
+        
+        {/* Form Dropdown Section */}
+        <AnimatePresence mode="wait">
+          {showVerificationForm && (
           <motion.div
             key="form-container"
             variants={formVariants}
@@ -940,6 +939,8 @@ function OwnerLanding() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
+      <Footer />
     </div>
   );
 }

@@ -4,6 +4,11 @@ import Footer from "../components/Footer";
 
 function TenantLanding() {
   const navigate = useNavigate();
+  
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -112,6 +117,49 @@ function TenantLanding() {
             </svg>
             Back
           </button>
+        </div>
+
+        {/* Continuous Horizontal Text Animation */}
+        <div className="relative w-full py-4 overflow-hidden backdrop-blur-sm mt-24">
+          <div className="flex animate-scroll-text">
+            <div className="flex space-x-8 px-4">
+              {[
+                "Pune has the best PG stays 🏠",
+                "Mumbai has the most affordable shared flats 💰",
+                "Bengaluru offers premium co-living spaces 🌟",
+                "Delhi has budget-friendly hostels 🎓",
+                "Hyderabad features modern apartments 🏢",
+                "Chennai provides peaceful residential areas 🌊",
+                "Kolkata has heritage-style accommodations 🏛️",
+                "Jaipur offers luxury rental homes 👑",
+                "Ahmedabad has affordable housing options 🏘️",
+                "Surat features modern studio apartments 🎬"
+              ].map((text, index) => (
+                <span key={index} className="text-gray-700 font-medium whitespace-nowrap text-sm md:text-base">
+                  {text}
+                </span>
+              ))}
+            </div>
+            {/* Duplicate for seamless loop */}
+            <div className="flex space-x-8 px-4">
+              {[
+                "Pune has the best PG stays 🏠",
+                "Mumbai has the most affordable shared flats 💰",
+                "Bengaluru offers premium co-living spaces 🌟",
+                "Delhi has budget-friendly hostels 🎓",
+                "Hyderabad features modern apartments 🏢",
+                "Chennai provides peaceful residential areas 🌊",
+                "Kolkata has heritage-style accommodations 🏛️",
+                "Jaipur offers luxury rental homes 👑",
+                "Ahmedabad has affordable housing options 🏘️",
+                "Surat features modern studio apartments 🎬"
+              ].map((text, index) => (
+                <span key={`duplicate-${index}`} className="text-gray-700 font-medium whitespace-nowrap text-sm md:text-base">
+                  {text}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Vercel-style Chat Container */}
