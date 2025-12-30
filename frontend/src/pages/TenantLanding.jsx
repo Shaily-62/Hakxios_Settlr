@@ -1,14 +1,60 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useAuth } from "../context/AuthContext";
+import { auth } from "../firebase/firebase";
 import Footer from "../components/Footer";
 
 function TenantLanding() {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  const [hasProfile, setHasProfile] = useState(false);
+  const [isCheckingProfile, setIsCheckingProfile] = useState(true);
   
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // ✅ Check if user has completed profile
+  useEffect(() => {
+    const checkProfile = async () => {
+      if (!auth.currentUser) {
+        console.log("⚠️ No auth.currentUser, skipping profile check");
+        setIsCheckingProfile(false);
+        return;
+      }
+
+      try {
+        console.log("🔍 Checking if tenant has profile...");
+        const token = await auth.currentUser.getIdToken();
+        const response = await fetch("http://localhost:5000/api/tenant/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("📊 Profile check result:", data.profileExists);
+          setHasProfile(data.profileExists);
+        } else {
+          console.log("⚠️ Profile check failed:", response.status);
+          setHasProfile(false);
+        }
+      } catch (error) {
+        console.error("❌ Error checking profile:", error);
+        setHasProfile(false);
+      } finally {
+        setIsCheckingProfile(false);
+      }
+    };
+
+    // Only check if user is authenticated
+    if (!loading && user) {
+      checkProfile();
+    } else if (!loading && !user) {
+      setIsCheckingProfile(false);
+    }
+  }, [user, loading]);
+
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -106,8 +152,9 @@ function TenantLanding() {
       </div>
 
       <div className="relative z-10 flex-grow flex flex-col">
-        {/* Back Button */}
-        <div className="absolute top-4 left-4 z-20">
+        {/* Header with Back Button and Profile Icon */}
+        <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between">
+          {/* Back Button */}
           <button
             onClick={() => navigate("/landing")}
             className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md hover:bg-gray-800 transition-all duration-200 hover:scale-105"
@@ -116,6 +163,27 @@ function TenantLanding() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back
+          </button>
+
+          {/* Profile Icon */}
+          <button
+            onClick={() => navigate("/tenant-profile")}
+            className="relative group"
+            title={hasProfile ? "View your profile" : "Complete your profile"}
+          >
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 border-2 border-white">
+              {user?.name ? user.name.charAt(0).toUpperCase() : user?.email?.charAt(0).toUpperCase() || "T"}
+            </div>
+            
+            {/* ✅ Notification Dot - Only show if profile is incomplete */}
+            {!isCheckingProfile && !hasProfile && (
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse"></div>
+            )}
+            
+            {/* Hover Tooltip */}
+            <div className="absolute top-full mt-2 right-0 bg-black text-white text-xs px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              {isCheckingProfile ? "Loading..." : hasProfile ? "View Profile" : "Complete Profile"}
+            </div>
           </button>
         </div>
 
@@ -162,7 +230,7 @@ function TenantLanding() {
           </div>
         </div>
 
-        {/* Vercel-style Chat Container */}
+        {/* Rest of your chat interface remains the same */}
         <div className="flex-grow flex items-start justify-center px-4 pt-16 pb-8 animate-fade-in-up">
           <div className="w-full max-w-4xl mx-auto p-4 space-y-8">
             <h1 className="text-4xl font-bold text-black dark:text-white text-center animate-fade-in-up-delay-1">
@@ -269,6 +337,7 @@ function TenantLanding() {
           </div>
         </div>
       </div>
+
       <Footer />
     </div>
   );

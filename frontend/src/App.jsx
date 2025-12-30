@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import Landing from "./pages/Landing";
 import TenantLanding from "./pages/TenantLanding";
 import OwnerLanding from "./pages/OwnerLanding";
+import TenantProfile from "./pages/TenantProfile"; 
 
 function AppWithNavbar() {
   const location = useLocation();
@@ -24,6 +25,7 @@ function AppWithNavbar() {
         <Route path="/tenant" element={<TenantLanding />} />
         <Route path="/owner" element={<OwnerLanding />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/tenant-profile" element={<TenantProfile />} />
       </Routes>
     </>
   );

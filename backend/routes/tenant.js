@@ -2,7 +2,8 @@ import express from "express";
 import verifyFirebaseToken from "../middleware/verifyFirebaseToken.js";
 import {
   createOrUpdateTenant,
-  getTenantProfile
+  getTenantProfile,
+  getAllTenants
 } from "../controllers/tenant.js";
 
 const router = express.Router();
@@ -20,5 +21,13 @@ router.post("/profile", verifyFirebaseToken, createOrUpdateTenant);
  * @access  Private
  */
 router.get("/profile", verifyFirebaseToken, getTenantProfile);
+
+/**
+ * @route   GET /api/tenant/all
+ * @desc    Get all tenant profiles (for owners to find tenants)
+ * @access  Private
+ * @query   city, minBudget, maxBudget, occupation
+ */
+router.get("/all", verifyFirebaseToken, getAllTenants);
 
 export default router;
